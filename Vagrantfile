@@ -93,6 +93,10 @@ Vagrant.configure("2") do |config|
     config.vm.define vmName = hostname do |kHost|
       kHost.vm.hostname = vmName
 
+      if vmName == "master"
+        kHost.vm.network :forwarded_port, guest: 8080, host: 8080
+      end
+
       if $enable_serial_logging
         logdir = File.join(File.dirname(__FILE__), "log")
         FileUtils.mkdir_p(logdir)
