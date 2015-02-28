@@ -10,14 +10,14 @@ Vagrant.require_version ">= 1.6.0"
 MASTER_YAML = File.join(File.dirname(__FILE__), "master.yaml")
 NODE_YAML = File.join(File.dirname(__FILE__), "node.yaml")
 
-$num_node_instances = ENV['NUM_INSTANCES'] || 2
+$num_node_instances = ENV['NUM_INSTANCES'] || 3
 $update_channel = ENV['CHANNEL'] || 'alpha'
 $coreos_version = ENV['COREOS_VERSION'] || 'latest'
 $enable_serial_logging = (ENV['SERIAL_LOGGING'].to_s.downcase == 'true')
 $vb_gui = (ENV['GUI'].to_s.downcase == 'true')
 $vb_master_memory = ENV['MASTER_MEM'] || 512
 $vb_master_cpus = ENV['MASTER_CPUS'] || 1
-$vb_node_memory = ENV['NODE_MEM'] || 1024
+$vb_node_memory = ENV['NODE_MEM'] || 2024
 $vb_node_cpus = ENV['NODE_CPUS'] || 1
 $kubernetes_version = ENV['KUBERNETES_VERSION'] || '0.11.0'
 
