@@ -1,4 +1,5 @@
 # kubernetes-vagrant-coreos-cluster
+
 **[Kubernetes](https://github.com/GoogleCloudPlatform/kubernetes)** (currently 0.11.0)
 cluster made easy with [Vagrant](https://www.vagrantup.com) (1.7.2+) and
 **[CoreOS](https://coreos.com)** [(alpha/593.0.0)](https://coreos.com/releases/).
@@ -107,7 +108,7 @@ All aspects of your cluster setup can be customized with environment variables. 
 
  - **NUM_INSTANCES** will set the number of nodes (minions).
 
-   > If unset defaults to 2
+   > If unset defaults to 3
  - **UPDATE_CHANNEL** will set the default CoreOS channel to be used in the VMs.
 
    > The default is the **alpha** channel (alternatives would be **stable** and **beta**).
@@ -136,7 +137,7 @@ All aspects of your cluster setup can be customized with environment variables. 
    > Defaults to 1.
  - **NODE_MEM** sets the worker nodes' (aka minions in Kubernetes lingo) VM memory.
 
-   > Defaults to 1024 (in MB)
+   > Defaults to 1536 (in MB)
  - **NODE_CPUS** sets the number os vCPUs to be used by the minions's VMs.
 
     > Defaults to 1.
@@ -163,13 +164,30 @@ NODE_MEM=2048 NODE_CPUS=2 NUM_INSTANCES=3 vagrant up
 $(./kubLocalSetup shellinit)
 ```
 
+Or use
+
+```
+brew install kubernetes-cli
+$(./kubLocalSetup shellinit)
+```
+
 ### Set-up cluster
 
 ```
 vagrant up master
 ```
+Wait until ```master``` has finished downloading Kubernetes binaries and provisioned a Docker mirror cache. This can take a few minutes depending on your Internet speed.
 
-Wait until ```master``` has finished downloading Kubernetes binaries and provisioned a Docker mirror cache. This can take a few minutes depending on your Internet speed. After that, bring up a couple minions:
+```
+#if you can wait
+vagrant ssh master
+sudo systemctl start kube-apiserver.service
+sudo systemctl start kube-controller-manager.service
+sudo systemctl start kube-scheduler.service
+sudo systemctl start kube-register.service
+```
+
+After that, bring up a couple minions:
 
 ```
 NODE_MEM=2048 NODE_CPUS=1 NUM_INSTANCES=2 vagrant up
@@ -180,6 +198,8 @@ NODE_MEM=2048 NODE_CPUS=1 NUM_INSTANCES=2 vagrant up
 You're now ready to use your Kubernetes cluster.
 
 If you just want to test something simple, start with [Kubernetes examples](https://github.com/GoogleCloudPlatform/kubernetes/blob/master/examples/).
+
+If you want to start with an online shop, use [AppStash](https://github.com/zutherb/AppStash/tree/master/kubernetes).
 
 ## Licensing
 
