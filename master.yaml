@@ -110,6 +110,7 @@ coreos:
         # GUNICORN_OPTS is an workaround for
         # https://github.com/docker/docker-registry/issues/892
         ExecStart=/usr/bin/docker run -d --restart always --net host --name docker-registry \
+          --insecure-registry 172.17.8.101:5000 \
           -e STANDALONE=false \
           -e GUNICORN_OPTS=[--preload] \
           -e MIRROR_SOURCE=https://registry-1.docker.io \
@@ -166,7 +167,7 @@ coreos:
 
         [Service]
         ExecStartPre=-/usr/bin/mkdir -p /opt/bin
-        ExecStartPre=/usr/bin/wget -N -P /opt/bin https://storage.googleapis.com/kubernetes-release/release/v0.11.0/bin/linux/amd64/kube-apiserver
+        ExecStartPre=/usr/bin/wget -N -P /opt/bin https://storage.googleapis.com/kubernetes-release/release/__RELEASE__/bin/linux/amd64/kube-apiserver
         ExecStartPre=/usr/bin/chmod a+x /opt/bin/kube-apiserver
         ExecStart=/opt/bin/kube-apiserver \
         --address=0.0.0.0 \
@@ -174,7 +175,8 @@ coreos:
         --portal_net=10.100.0.0/16 \
         --etcd_servers=http://127.0.0.1:4001 \
         --public_address_override=172.17.8.101 \
-        --logtostderr=true \
+        --allow_privileged=true \
+        --logtostderr=true
         --runtime_config=api/v1beta3
         Restart=always
         RestartSec=10
@@ -188,7 +190,7 @@ coreos:
         After=kube-apiserver.service
 
         [Service]
-        ExecStartPre=/usr/bin/wget -N -P /opt/bin https://storage.googleapis.com/kubernetes-release/release/v0.11.0/bin/linux/amd64/kube-controller-manager
+        ExecStartPre=/usr/bin/wget -N -P /opt/bin https://storage.googleapis.com/kubernetes-release/release/__RELEASE__/bin/linux/amd64/kube-controller-manager
         ExecStartPre=/usr/bin/chmod a+x /opt/bin/kube-controller-manager
         ExecStart=/opt/bin/kube-controller-manager \
         --master=127.0.0.1:8080 \
@@ -205,7 +207,7 @@ coreos:
         After=kube-apiserver.service
 
         [Service]
-        ExecStartPre=/usr/bin/wget -N -P /opt/bin https://storage.googleapis.com/kubernetes-release/release/v0.11.0/bin/linux/amd64/kube-scheduler
+        ExecStartPre=/usr/bin/wget -N -P /opt/bin https://storage.googleapis.com/kubernetes-release/release/__RELEASE__/bin/linux/amd64/kube-scheduler
         ExecStartPre=/usr/bin/chmod a+x /opt/bin/kube-scheduler
         ExecStart=/opt/bin/kube-scheduler --master=127.0.0.1:8080
         Restart=always
